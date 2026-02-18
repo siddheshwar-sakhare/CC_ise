@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
 const MEALS = ["All", "Breakfast", "Lunch", "Dinner"];
 
 function App() {
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("Sangli");
   const [cities, setCities] = useState([]);
 
   // Load city list from DB on mount
@@ -24,7 +24,7 @@ function App() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(
-    "Pick your city and click Explore to find top spots!",
+    "Click Explore to find top spots in Sangli!",
   );
 
   const [showAdvanced, setShowAdvanced] = useState(false);
