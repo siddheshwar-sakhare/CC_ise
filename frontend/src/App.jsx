@@ -1,12 +1,22 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
-const CITIES = ["Sangli", "Kolhapur", "Pune", "Mumbai", "Bangalore"];
 const MEALS = ["All", "Breakfast", "Lunch", "Dinner"];
 
 function App() {
   const [city, setCity] = useState("");
+  const [cities, setCities] = useState([]);
+
+  // Load city list from DB on mount
+  useEffect(() => {
+    fetch(`${API_BASE}/api/cities`)
+      .then((r) => r.json())
+      .then((data) => setCities(data.cities || []))
+      .catch(() =>
+        setCities(["Sangli", "Kolhapur", "Pune", "Mumbai", "Bangalore"]),
+      );
+  }, []);
   const [mealType, setMealType] = useState("All");
   const [maxPrice, setMaxPrice] = useState(2000);
   const [minRating, setMinRating] = useState(0);
@@ -150,7 +160,7 @@ function App() {
                 onChange={(event) => setCity(event.target.value)}
               >
                 <option value="">Select City</option>
-                {CITIES.map((item) => (
+                {cities.map((item) => (
                   <option key={item} value={item}>
                     {item}
                   </option>
@@ -252,11 +262,19 @@ function App() {
               const mapLink = `https://www.google.com/maps/search/?api=1&query=${query}`;
 
               return (
-                <article className="restaurant-card" key={restaurant.id}>
+                <article
+                  className="restaurant-card"
+                  key={restaurant._id || restaurant.id}
+                >
                   <img
-                    src={restaurant.img}
+                    src={
+                      restaurant.img ||
+                      "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400"
+                    }
                     alt={restaurant.name}
+                    loading="lazy"
                     onError={(event) => {
+                      event.currentTarget.onerror = null; // prevent infinite loop
                       event.currentTarget.src =
                         "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400";
                     }}
